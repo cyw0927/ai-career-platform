@@ -1,0 +1,85 @@
+[
+  {
+    "name": "reported_and_missing",
+    "requirements": [
+      {
+        "code": "python",
+        "required_level": 3
+      },
+      {
+        "code": "sql",
+        "required_level": 4
+      },
+      {
+        "code": "git",
+        "required_level": 2
+      }
+    ],
+    "observed": {
+      "python": 1,
+      "sql": null
+    },
+    "expected": [
+      {
+        "code": "sql",
+        "required_level": 4,
+        "observed_level": null,
+        "gap": 4,
+        "missing_kind": "not_reported"
+      },
+      {
+        "code": "git",
+        "required_level": 2,
+        "observed_level": null,
+        "gap": 2,
+        "missing_kind": "not_registered"
+      },
+      {
+        "code": "python",
+        "required_level": 3,
+        "observed_level": 1,
+        "gap": 2,
+        "missing_kind": null
+      }
+    ]
+  },
+  {
+    "name": "levels_at_or_above_requirement",
+    "requirements": [
+      {
+        "code": "python",
+        "required_level": 3
+      },
+      {
+        "code": "sql",
+        "required_level": 2
+      }
+    ],
+    "observed": {
+      "python": 3,
+      "sql": 5
+    },
+    "expected": [
+      {
+        "code": "python",
+        "required_level": 3,
+        "observed_level": 3,
+        "gap": 0,
+        "missing_kind": null
+      },
+      {
+        "code": "sql",
+        "required_level": 2,
+        "observed_level": 5,
+        "gap": 0,
+        "missing_kind": null
+      }
+    ]
+  },
+  {
+    "name": "no_requirements",
+    "requirements": [],
+    "observed": {},
+    "expected": []
+  }
+]
