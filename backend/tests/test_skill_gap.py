@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import pytest
 from app.services.skill_gap import Requirement, calculate_skill_gap, to_snapshot_example, RULE_VERSION
 
@@ -61,3 +61,24 @@ def test_synthetic_golden_cases_and_repeatability(case):
         snapshot = to_snapshot_example(item)
         assert snapshot['observed_level'] == (item.observed_level if item.observed_level is not None else 0)
         assert snapshot['gap'] == max(snapshot['required_level'] - snapshot['observed_level'], 0)
+
+
+def test_all_reported_levels_have_correct_gap_and_snapshot():
+    for required in range(1, 6):
+        for observed in range(1, 6):
+            item = calculate_skill_gap([Requirement('python', required)], {'python': observed}).items[0]
+            assert item.gap == max(required - observed, 0)
+            assert to_snapshot_example(item)['observed_level'] == observed
+            assert item.missing_kind is None
+
+
+def test_invalid_snapshot_values_are_rejected():
+    valid = calculate_skill_gap([Requirement('python', 3)], {'python': None}).items[0]
+    for invalid in (
+        replace(valid, gap=2), replace(valid, gap=True),
+        replace(valid, missing_kind=None), replace(valid, observed_level=0),
+        replace(valid, required_level=6), replace(valid, code=''),
+        replace(valid, mandatory=1), replace(valid, observed_level=1),
+    ):
+        with pytest.raises(ValueError):
+            to_snapshot_example(invalid)

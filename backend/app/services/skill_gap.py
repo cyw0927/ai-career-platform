@@ -81,6 +81,20 @@ def to_snapshot_example(item: GapItem) -> dict:
     """
     if not isinstance(item, GapItem):
         raise ValueError("GapItem이 필요합니다")
+    _code(item.code)
+    _level(item.required_level)
+    if item.observed_level is not None:
+        _level(item.observed_level)
+    if type(item.mandatory) is not bool:
+        raise ValueError("필수 여부는 참 또는 거짓이어야 합니다")
+    if item.observed_level is None:
+        if item.missing_kind not in ('not_registered', 'not_reported'):
+            raise ValueError("미입력 사유가 올바르지 않습니다")
+    elif item.missing_kind is not None:
+        raise ValueError("입력된 숙련도에 미입력 사유를 지정할 수 없습니다")
+    expected_gap = max(item.required_level - (item.observed_level or 0), 0)
+    if type(item.gap) is not int or item.gap != expected_gap:
+        raise ValueError("기술 차이가 입력 수준과 일치하지 않습니다")
     return {
         'skill_code': item.code,
         'required_level': item.required_level,
